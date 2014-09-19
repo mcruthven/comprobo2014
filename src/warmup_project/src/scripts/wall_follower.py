@@ -1,20 +1,16 @@
 #!/usr/bin/env python
 
+from follower import Follower
+
 import rospy
 import math
 from geometry_msgs.msg import Twist, Vector3
 from sensor_msgs.msg import LaserScan
 
 
-class WallFollower(object):
+class WallFollower(Follower):
   """Follows a wall if it is next to a wall."""
 
-  def __init__(self):
-    self.distance = -1
-    self.theta = -1
-    self.v = .3
-    self.msg = -1
-  
   def get_avg_distance(self, angle):
     """Returns the distance from the wall at angle."""
     valid_ranges = []
@@ -40,6 +36,9 @@ class WallFollower(object):
           # If it sees a small object remove it
           if count < 3:
             valid_angles = valid_angles[:len(valid_angles) - count]
+            self.object_exists = True
+          else:
+            self.object_exists = False
           count = 0
           start = False
     return self.avg(valid_angles)
@@ -56,36 +55,19 @@ class WallFollower(object):
       return theta - 360 if theta > 180 else theta
     return None
   
-  @staticmethod
-  def avg(elements):
-    """Returns the average value of elements.
-    Returns:
-      The average or None if the list is empty
-    """
-    if len(elements) > 0:
-      return sum(elements)/1.0/len(elements)
-    return None
-  
   def get_location(self, msg):
     self.msg = msg
     self.theta = self.get_avg_theta()
+
+  def follow(self, m=1):
+    """Follow the wall based on the angle from the wall"""
     if self.theta:
-      self.distance = self.get_avg_distance(89 - (int)(self.theta))
-  
-  def run(self, m=1):
-    """Follows the wall using sensor data."""
-    self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-    sub = rospy.Subscriber('scan', LaserScan, self.get_location)
-    rospy.init_node('control_neato', anonymous=True)
-    r = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
-      if self.theta:
-        s = m * self.v
-        a = self.theta/50
-        #print self.distance, s, a 
-        self.pub.publish(Twist(linear=Vector3(x=s), angular=Vector3(z=a)))
-      r.sleep()
-  
+      s = m * self.v
+      a = self.theta/50
+      return s, a
+    else:
+      return None, None
+ 
         
 if __name__ == '__main__':
   try:
