@@ -29,6 +29,9 @@ class Follower(object):
     if len(elements) > 0:
       return sum(elements)/1.0/len(elements)
     return None
+
+  def get_location(self, msg):
+    """Subscribed to LaserScan and uses data to change theta or distance."""
   
   def follow(self):
     """Returns an angular and linear velocity based on sensor data."""

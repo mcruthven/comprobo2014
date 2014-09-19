@@ -33,14 +33,14 @@ class WallFollower(Follower):
         valid_angles.append(offset)
         count += 1
       elif start:
-          # If it sees a small object remove it
-          if count < 3:
-            valid_angles = valid_angles[:len(valid_angles) - count]
-            self.object_exists = True
-          else:
-            self.object_exists = False
-          count = 0
-          start = False
+        # If it sees a small object remove it
+        if count < 3:
+          valid_angles = valid_angles[:len(valid_angles) - count]
+          self.object_exists = True
+        else:
+          self.object_exists = False
+        count = 0
+        start = False
     return self.avg(valid_angles)
 
   def get_theta(self, angle_1):
@@ -62,9 +62,9 @@ class WallFollower(Follower):
   def follow(self, m=1):
     """Follow the wall based on the angle from the wall"""
     if self.theta:
-      s = m * self.v
-      a = self.theta/50
-      return s, a
+      v = m * self.v
+      w = self.theta/50
+      return v, w
     else:
       return None, None
  

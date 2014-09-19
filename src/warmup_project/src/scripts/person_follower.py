@@ -44,10 +44,10 @@ class PersonFollower(Follower):
        The linear velocity and the angular velocity
     """
     if self.theta:
-      a = self.theta/50
-      s = (self.distance - self.des_dist) * self.v
+      w = self.theta/50
+      v = (self.distance - self.des_dist) * self.v
       self.object_exists = True
-      return s, a
+      return v, w
     else:
       self.object_exists = False 
       return None, None

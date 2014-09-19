@@ -1,0 +1,36 @@
+Mary Ruthven
+Warm Up Project
+
+In this lab, I implemented the wall following and person following behaviors.
+
+The wall and person followers use proportional control to move towards objects.
+The person follower looks for an object in front of it. If there is an object
+in front, it finds the center of that object and moves 1 meter away from it. In
+order to implement the wall follower, I put the proportional control in the
+angular velocity term, and the linear velocity is just constant. In wall
+following the neato ignores any small objects around it unless theres a large
+group of small objects that appear to be one wall. 
+
+I switched between the two behaviors by seeing if there’s an object smaller than
+a wall. If there is then the neato switches to following that. If there isn’t
+then it switches to wall following mode. This assumes that there are only walls
+and humans in the environment otherwise it might follow an object that doesn’t
+move.
+
+I made two classes a person follower and wall follower. They are subclasses of
+the follower class.
+
+When testing the code, I did not always realize what exactly was going wrong
+with the neato system. At the beginning, sometimes the neato would stop moving.
+It took a while to figure out it thought it had debris under its wheels and I had
+to click through the dialogues to get it back to an ok state. Also I did not know
+about the problem with switching from using the simulator to the actual robot. 
+
+Right now the neato only follows around concave corners, so I would like to make
+it follow convex corners as well. Also as the design stands the neato has to be
+in a world with only walls and people. This a very realistic environment, so I
+could try only following small objects that move and ignore all other small objects.
+
+I learned to always test my code first using the simulator, because it is easier
+to test, and I don’t have to be in the AC.
+
