@@ -6,18 +6,6 @@ from geometry_msgs.msg import Twist, Vector3
 from sensor_msgs.msg import LaserScan
 
 
-def getch():
-  """ Return the next character typed on the keyboard """
-  import sys, tty, termios
-  fd = sys.stdin.fileno()
-  old_settings = termios.tcgetattr(fd)
-  try:
-    tty.setraw(sys.stdin.fileno())
-    ch = sys.stdin.read(1)
-  finally:
-    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-  return ch
-
 class PersonFollower(object):
   """Follows a person around."""
   
@@ -25,6 +13,7 @@ class PersonFollower(object):
     self.theta = -1
     self.des_dist = des_dist
     self.distance = -1
+    self.v = .3
     self.msg = -1
 
   def get_location(self, msg):
@@ -55,7 +44,7 @@ class PersonFollower(object):
       self.theta = -1
       self.distance = -1
   
-  def follow(self):
+  def run(self):
     # If an object is sensed in front of the neato, follow it.
     self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     sub = rospy.Subscriber('scan', LaserScan, self.get_location)
@@ -63,14 +52,14 @@ class PersonFollower(object):
     r = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
       if self.theta != -1.0:
-        w = self.theta/50
-        v = (self.des_dist - self.distance) * -.3
-        self.pub.publish(Twist(linear=Vector3(x=v), angular=Vector3(z=w)))
+        a = self.theta/50
+        s = (self.distance - self.des_dist) * self.v
+        self.pub.publish(Twist(linear=Vector3(x=s), angular=Vector3(z=a)))
       r.sleep()
       
         
 if __name__ == '__main__':
   try:
     follower = PersonFollower()
-    follower.follow()
+    follower.run()
   except rospy.ROSInterruptException: pass
