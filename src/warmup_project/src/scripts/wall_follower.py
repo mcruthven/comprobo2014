@@ -16,7 +16,7 @@ class WallFollower(Follower):
     valid_ranges = []
     for i in range(3):
       reading = self.msg.ranges[(angle - 1 + i) % 359]
-      if reading > 0 and reading < 6:
+      if reading > 0 and reading < 3:
          valid_ranges.append(reading)
     return self.avg(valid_ranges)
 

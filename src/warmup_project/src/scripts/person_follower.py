@@ -30,7 +30,7 @@ class PersonFollower(Follower):
     for i in range(r):
       new_angle = i - r/2 
       reading = self.msg.ranges[new_angle % 359]
-      if reading > 0 and reading < 8:
+      if reading > 0 and reading < 3:
          valid_ranges.append(reading)
          angles.append(new_angle) 
 
